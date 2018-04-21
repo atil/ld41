@@ -6,14 +6,16 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    private readonly List<CardData> _allCardData = new List<CardData>();
+    private readonly List<CardModel> _allCardData = new List<CardModel>();
     private Table[] _tableStacks;
+    private Deck _deckStack;
+    private Wastepile _wastepile;
 
     [SerializeField]
     private GameObject _cardPrefab;
 
     #region Roots
-    [Header("CardData Stack Roots")]
+    [Header("CardModel Stack Roots")]
     [SerializeField]
     private Transform _deckRoot;
 
@@ -51,26 +53,44 @@ public class Game : MonoBehaviour
             _tableStacks[i] = new Table(_tableRoots[i]);
             for (int j = 0; j < i; j++)
             {
-                var card = Instantiate(_cardPrefab, _tableRoots[i]).GetComponent<Card>();
-                card.SetWith(_allCardData[globalCardCounter]);
-                _tableStacks[i].Add(card);
+                CreateCard(_allCardData[globalCardCounter], _tableRoots[i]);
+                _tableStacks[i].Add(_allCardData[globalCardCounter]);
 
                 globalCardCounter++;
             }
 
             _tableStacks[i].RefreshVisual();
         }
+
+        _wastepile = new Wastepile(_wastepileRoot);
+        _deckStack = new Deck(_deckRoot, _wastepile);
+
+        for (int i = globalCardCounter; i < _allCardData.Count; i++)
+        {
+            CreateCard(_allCardData[i], _deckRoot);
+            _deckStack.Add(_allCardData[i]);
+        }
+
+        _deckStack.RefreshVisual();
     }
 
     private void AddAllCardsOfType(CardType type)
     {
         for (int i = 1; i < 14; i++)
         {
-            _allCardData.Add(new CardData()
+            _allCardData.Add(new CardModel()
             {
                 Type = type,
                 Number = i
             });
         }
+    }
+
+    private CardView CreateCard(CardModel cardModel, Transform root)
+    {
+        var cardView = Instantiate(_cardPrefab, root).GetComponent<CardView>();
+        cardView.SetWith(cardModel);
+
+        return cardView;
     }
 }

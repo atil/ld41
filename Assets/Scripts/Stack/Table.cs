@@ -8,9 +8,9 @@ public class Table : Stack
 {
     public Table(Transform root) : base(root) { }
 
-    public void Add(Card card)
+    public void Add(CardModel cardModel)
     {
-        _cards.Add(card);
+        _cards.Add(cardModel);
     }
 
     public override void RefreshVisual()
@@ -19,10 +19,10 @@ public class Table : Stack
         {
             if (i > 0)
             {
-                _cards[i].transform.Rotate(Vector3.up, 180f);
+                _cards[i].Hide();
             }
 
-            _cards[i].transform.position = _root.position + (_cards.Count - i) * Vector3.back;
+            _cards[i].SetPosition(_root.position + (_cards.Count - i) * Vector3.back);
         }
     }
 

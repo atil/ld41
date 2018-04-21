@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Stack
 {
-    protected readonly List<Card> _cards = new List<Card>();
+    protected readonly List<CardModel> _cards = new List<CardModel>();
     protected readonly Transform _root;
 
     public Stack(Transform root)
