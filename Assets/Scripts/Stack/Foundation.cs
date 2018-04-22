@@ -30,7 +30,7 @@ public class Foundation : Stack
         {
             Cards[i].gameObject.SetActive(i == 0);
             Cards[i].SetHidden(i != 0);
-            Cards[i].SetPosition(Root.transform.position);
+            Cards[i].SetPosition(Root.transform.position + Vector3.up * 0.01f);
         }
     }
 
