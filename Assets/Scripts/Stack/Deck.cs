@@ -23,8 +23,40 @@ public class Deck : Stack
         for (var i = 0; i < _cards.Count; i++)
         {
             var cardData = _cards[i];
-            cardData.Hide();
+            _cards[i].IsHidden = true;
             cardData.SetPosition(_root.position + Vector3.up * i * 0.025f);
         }
+    }
+
+    public override CardModel TakeCard()
+    {
+        if (_cards.Count == 0)
+        {
+
+        }
+        else
+        {
+            var cardCountToTake = 3;
+            if (_cards.Count == 2)
+            {
+                cardCountToTake = 2;
+            }
+            if (_cards.Count == 1)
+            {
+                cardCountToTake = 1;
+            }
+
+            var cardsToWastepile = new List<CardModel>();
+            for (int i = cardCountToTake - 1; i >= 0; i--)
+            {
+                cardsToWastepile.Add(_cards[0]);
+                _cards[0].RemoveVisual();
+                _cards.RemoveAt(0);
+            }
+            
+            _wastepile.Put(cardsToWastepile);
+        }
+        return null;
+
     }
 }

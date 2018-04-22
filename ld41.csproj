@@ -308,6 +308,7 @@
     <Compile Include="Assets\Scripts\Controller\FpsController.cs" />
     <Compile Include="Assets\Scripts\Game.cs" />
     <Compile Include="Assets\Scripts\Controller\MouseLook.cs" />
+    <Compile Include="Assets\Scripts\Interaction.cs" />
     <Compile Include="Assets\Scripts\Stack\Deck.cs" />
     <Compile Include="Assets\Scripts\Stack\Stack.cs" />
     <Compile Include="Assets\Scripts\Stack\Table.cs" />

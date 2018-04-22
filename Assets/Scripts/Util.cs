@@ -6,6 +6,8 @@ using UnityEngine;
 
 public static class Util
 {
+    private static readonly System.Random Rng = new System.Random();
+
     public static Vector3 WithX(this Vector3 v, float x)
     {
         return new Vector3(x, v.y, v.z);
@@ -35,4 +37,19 @@ public static class Util
     {
         return t.InverseTransformDirection(v).ToHorizontal().normalized;
     }
+
+    public static void Shuffle<T>(this IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
 }
+
+

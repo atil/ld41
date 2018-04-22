@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class CardView : MonoBehaviour
 {
+    public CardModel Model { get; private set; }
+
     [SerializeField]
     private TextMeshPro _numberText;
 
@@ -25,11 +27,18 @@ public class CardView : MonoBehaviour
         }
 
         cardModel.Hide += OnHidden;
-        cardModel.Reveal+= OnReveal;
+        cardModel.Reveal += OnReveal;
         cardModel.SetPosition += pos =>
         {
             transform.position = pos;
         };
+        cardModel.RemoveVisual += () =>
+        {
+          
+            Destroy(gameObject);
+        };
+
+        Model = cardModel;
     }
 
     public void OnHidden()
@@ -39,6 +48,10 @@ public class CardView : MonoBehaviour
 
     public void OnReveal()
     {
+        if (gameObject == null)
+        {
+            var a = 3;
+        }
         transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
     }
 }

@@ -14,5 +14,15 @@ public class Stack
         _root = root;
     }
 
+    public bool OwnsCard(CardModel cardModel)
+    {
+        return _cards.Contains(cardModel);
+    }
+
     public virtual void RefreshVisual() { }
+
+    public virtual CardModel TakeCard()
+    {
+        return null;
+    }
 }

@@ -6,13 +6,22 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
+    public static GameObject CardPrefab
+    {
+        get { return Resources.Load<GameObject>("Prefabs/Card"); }
+    }
+
     private readonly List<CardModel> _allCardData = new List<CardModel>();
     private Table[] _tableStacks;
     private Deck _deckStack;
-    private Wastepile _wastepile;
+    private Wastepile _wastepileStack;
+    private readonly List<Stack> _allStacks = new List<Stack>();
+    private CardModel _takenCard;
+
+    private GameObject _cardPrefab;
 
     [SerializeField]
-    private GameObject _cardPrefab;
+    private Interaction _interaction;
 
     #region Roots
     [Header("CardModel Stack Roots")]
@@ -40,11 +49,14 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        _interaction.OnCardViewClicked += OnCardViewClicked;
+        _cardPrefab = CardPrefab;
         AddAllCardsOfType(CardType.Club);
         AddAllCardsOfType(CardType.Diamond);
         AddAllCardsOfType(CardType.Heart);
         AddAllCardsOfType(CardType.Spade);
-        
+        _allCardData.Shuffle();
+
         _tableStacks = new Table[7];
 
         var globalCardCounter = 0;
@@ -62,8 +74,8 @@ public class Game : MonoBehaviour
             _tableStacks[i].RefreshVisual();
         }
 
-        _wastepile = new Wastepile(_wastepileRoot);
-        _deckStack = new Deck(_deckRoot, _wastepile);
+        _wastepileStack = new Wastepile(_wastepileRoot);
+        _deckStack = new Deck(_deckRoot, _wastepileStack);
 
         for (int i = globalCardCounter; i < _allCardData.Count; i++)
         {
@@ -72,6 +84,10 @@ public class Game : MonoBehaviour
         }
 
         _deckStack.RefreshVisual();
+
+        _allStacks.AddRange(_tableStacks);
+        _allStacks.Add(_deckStack);
+        _allStacks.Add(_wastepileStack);
     }
 
     private void AddAllCardsOfType(CardType type)
@@ -93,4 +109,20 @@ public class Game : MonoBehaviour
 
         return cardView;
     }
+
+    private void OnCardViewClicked(CardView cardView)
+    {
+        if (_takenCard != null)
+        {
+            return;
+        }
+
+        var ownerStack = _allStacks.Find(x => x.OwnsCard(cardView.Model));
+        if (ownerStack != null)
+        {
+            _takenCard = ownerStack.TakeCard();
+            _interaction.SetCard(_takenCard);
+        }
+    }
+
 }
