@@ -16,6 +16,8 @@ public class Game : MonoBehaviour
     private Deck _deckStack;
     private Wastepile _wastepileStack;
     private readonly List<Stack> _allStacks = new List<Stack>();
+
+    private Stack _takenStack;
     private Card _takenCard;
 
     private GameObject _cardPrefab;
@@ -50,6 +52,8 @@ public class Game : MonoBehaviour
     private void Start()
     {
         _interaction.OnCardViewClicked += OnCardViewClicked;
+        _interaction.OnCardUndo += OnCardUndo;
+
         _cardPrefab = CardPrefab;
         AddAllCardsOfType(CardType.Club);
         AddAllCardsOfType(CardType.Diamond);
@@ -63,14 +67,14 @@ public class Game : MonoBehaviour
         for (int i = 0; i < 7; i++)
         {
             _tableStacks[i] = new Table(_tableRoots[i]);
-            for (int j = 0; j < i; j++)
+            for (int j = 0; j < i + 1; j++)
             {
                 _tableStacks[i].Add(_allCardData[globalCardCounter]);
 
                 globalCardCounter++;
             }
 
-            _tableStacks[i].RefreshVisual();
+            _tableStacks[i].RefreshVisual(true);
         }
 
         _wastepileStack = new Wastepile(_wastepileRoot);
@@ -81,7 +85,7 @@ public class Game : MonoBehaviour
             _deckStack.Add(_allCardData[i]);
         }
 
-        _deckStack.RefreshVisual();
+        _deckStack.RefreshVisual(true);
 
         _allStacks.AddRange(_tableStacks);
         _allStacks.Add(_deckStack);
@@ -100,20 +104,55 @@ public class Game : MonoBehaviour
 
     private void OnCardViewClicked(Card card)
     {
-        if (_takenCard != null)
-        {
-            return;
-        }
-
         var ownerStack = _allStacks.Find(x => x.OwnsCard(card));
         if (ownerStack != null)
         {
-            _takenCard = ownerStack.TakeCard();
-            _takenCard.transform.SetParent(_interaction.CardRoot);
-            _takenCard.transform.localPosition = Vector3.zero;
-            _takenCard.transform.localRotation = Quaternion.identity;
-            _takenCard.transform.localScale = Vector3.one;
+            if (_takenCard != null)
+            {
+                var tempRoot = _takenCard.transform.parent;
+                _takenCard.transform.SetParent(null);
+
+                var succ = ownerStack.PutCard(_takenCard);
+                if (succ)
+                {
+                    _takenCard.transform.localScale = Vector3.one;
+                    _takenCard = null;
+                    _takenStack = null;
+                }
+                else
+                {
+                  _takenCard.transform.SetParent(tempRoot);  
+                }
+            }
+            else
+            {
+                _takenCard = ownerStack.TakeCard();
+                if (_takenCard != null)
+                {
+                    _takenCard.transform.SetParent(_interaction.CardRoot);
+                    _takenCard.transform.localPosition = Vector3.zero;
+                    _takenCard.transform.localRotation = Quaternion.identity;
+                    _takenCard.transform.localScale = Vector3.one;
+                    _takenStack = ownerStack;
+                }
+            }
         }
     }
+
+    private void OnCardUndo()
+    {
+        if (_takenCard == null)
+        {
+            return;
+        }
+        _takenCard.transform.SetParent(null);
+        _takenCard.transform.localScale = Vector3.one;
+
+        _takenStack.UndoCardTake(_takenCard);
+
+        _takenCard = null;
+        _takenStack = null;
+    }
+
 
 }

@@ -8,30 +8,63 @@ public class Wastepile : Stack
 {
     public Wastepile(Transform root) : base(root) { }
 
-    public void Put(List<Card> cards)
+    public List<Card> GiveUpCards()
     {
-        _cards.AddRange(cards);
-        RefreshVisual();
+        foreach (var card in Cards)
+        {
+            card.gameObject.SetActive(true);
+        }
+        Cards.Reverse();
+        var c = new List<Card>(Cards);
+        Cards.Clear();
+        return c;
     }
 
-    public override void RefreshVisual()
+    public void Put(List<Card> cards)
     {
-        var cardCountToReveal = Mathf.Min(3, _cards.Count);
-        for (int i = 0; i < _cards.Count; i++)
+        cards.Reverse();
+        Cards.InsertRange(0, cards);
+        RefreshVisual(false);
+    }
+
+    public override void RefreshVisual(bool initial)
+    {
+        var cardCountToReveal = Mathf.Min(3, Cards.Count);
+        for (int i = 0; i < Cards.Count; i++)
         {
             if (i < cardCountToReveal)
             {
-                _cards[i].SetHidden(false);
-                _cards[i].SetPosition(_root.transform.position
-                                      + Vector3.right * 0.3f + Vector3.up * 0.01f);
-                _cards[i].gameObject.SetActive(true);
+                Cards[i].SetHidden(false);
+                Cards[i].SetPosition(Root.transform.position
+                                      + Vector3.right * 0.3f * i 
+                                      + Vector3.up * -0.01f * i
+                                      + Vector3.forward * 0.3f * i);
+                Cards[i].gameObject.SetActive(true);
 
             }
             else
             {
-                _cards[i].gameObject.SetActive(false);
+                Cards[i].gameObject.SetActive(false);
             }
 
         }
+    }
+
+    public override Card TakeCard()
+    {
+        if (Cards.Count > 0)
+        {
+            var topCard = Cards[0];
+            Cards.RemoveAt(0);
+            return topCard;
+        }
+        return null;
+    }
+
+    public override bool UndoCardTake(Card card)
+    {
+        Put(new List<Card>() {card});
+
+        return true;
     }
 }

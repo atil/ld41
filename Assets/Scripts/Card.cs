@@ -32,6 +32,9 @@ public class Card : MonoBehaviour
         Type = type;
         Number = number;
 
+        _shapeText.text = type.ToString();
+        _numberText.text = number.ToString();
+
         if (Type == CardType.Diamond || Type == CardType.Heart)
         {
             _numberText.color = Color.red;
@@ -55,5 +58,13 @@ public class Card : MonoBehaviour
         {
             transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         }
+    }
+
+    public bool IsColorSameWith(Card c)
+    {
+        var isThisRed = Type == CardType.Diamond || Type == CardType.Heart;
+        var isArgRed = c.Type == CardType.Diamond || c.Type == CardType.Heart;
+
+        return !(isThisRed ^ isArgRed);
     }
 }

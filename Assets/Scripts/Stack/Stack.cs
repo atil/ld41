@@ -6,23 +6,33 @@ using UnityEngine;
 
 public class Stack
 {
-    protected readonly List<Card> _cards = new List<Card>();
-    protected readonly Transform _root;
+    protected readonly List<Card> Cards = new List<Card>();
+    protected readonly Transform Root;
 
     public Stack(Transform root)
     {
-        _root = root;
+        Root = root;
     }
 
-    public bool OwnsCard(Card Card)
+    public virtual bool OwnsCard(Card card)
     {
-        return _cards.Contains(Card);
+        return Cards.Contains(card);
     }
 
-    public virtual void RefreshVisual() { }
+    public virtual void RefreshVisual(bool initial) { }
 
     public virtual Card TakeCard()
     {
         return null;
+    }
+
+    public virtual bool PutCard(Card card)
+    {
+        return false;
+    }
+
+    public virtual bool UndoCardTake(Card card)
+    {
+        return false;
     }
 }

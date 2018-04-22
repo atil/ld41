@@ -10,35 +10,75 @@ public class Table : Stack
 
     public void Add(Card card)
     {
-        _cards.Add(card);
+        Cards.Insert(0, card);
     }
 
-    public override void RefreshVisual()
+    public override void RefreshVisual(bool initial)
     {
-        for (var i = 0; i < _cards.Count; i++)
+        for (int i = 0; i < Cards.Count; i++)
         {
-            _cards[i].SetHidden(i > 0);
-            _cards[i].SetPosition(_root.position + (_cards.Count - i) * Vector3.back);
+            if (initial)
+            {
+                Cards[i].SetHidden(i > 0);
+            }
+            else
+            {
+                Cards[i].SetHidden(Cards[i].IsHidden);
+            }
+            Cards[i].SetPosition(Root.position + (Cards.Count - i) * Vector3.back);
         }
     }
 
     public override Card TakeCard()
     {
-        if (_cards.Count == 0)
+        if (Cards.Count == 0)
         {
             return null;
         }
 
-        var topCard = _cards[0];
+        var topCard = Cards[0];
         if (topCard.IsHidden)
         {
-            topCard.IsHidden = false;
-            RefreshVisual();
+            topCard.SetHidden(false);
+            RefreshVisual(false);
             return null;
         }
 
-        _cards.Remove(topCard);
-        RefreshVisual();
+        Cards.Remove(topCard);
+        RefreshVisual(false);
         return topCard;
+    }
+
+    public override bool PutCard(Card card)
+    {
+        if (Cards.Count == 0)
+        {
+            if (card.Number == 13)
+            {
+                Add(card);
+                RefreshVisual(false);
+                return true;
+            }
+        }
+        else
+        {
+            var topCard = Cards[0];
+            if (!topCard.IsColorSameWith(card)
+                && topCard.Number == card.Number + 1)
+            {
+                Add(card);
+                RefreshVisual(false);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public override bool UndoCardTake(Card card)
+    {
+        Add(card);
+        RefreshVisual(true);
+        return true;
     }
 }

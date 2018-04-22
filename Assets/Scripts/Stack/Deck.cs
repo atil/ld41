@@ -7,41 +7,54 @@ using UnityEngine;
 public class Deck : Stack
 {
     private readonly Wastepile _wastepile;
+    private readonly Card _bottomCard;
 
     public Deck(Transform root, Wastepile wastepile) : base(root)
     {
+        _bottomCard = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/DeckBottomCard"), Root).GetComponent<Card>();
         _wastepile = wastepile;
     }
 
     public void Add(Card Card)
     {
-        _cards.Add(Card);
+        Cards.Add(Card);
     }
 
-    public override void RefreshVisual()
+    public override bool OwnsCard(Card card)
     {
-        for (var i = 0; i < _cards.Count; i++)
+        if (card == _bottomCard)
         {
-            var cardData = _cards[i];
-            _cards[i].SetHidden(true);
-            cardData.SetPosition(_root.position + Vector3.up * i * 0.025f);
+            return true;
+        }
+
+        return base.OwnsCard(card);
+    }
+
+    public override void RefreshVisual(bool initial)
+    {
+        for (var i = 0; i < Cards.Count; i++)
+        {
+            var cardData = Cards[i];
+            Cards[i].SetHidden(true);
+            cardData.SetPosition(Root.position + Vector3.up * (Cards.Count - i) * 0.025f);
         }
     }
 
     public override Card TakeCard()
     {
-        if (_cards.Count == 0)
+        if (Cards.Count == 0)
         {
-
+            Cards.AddRange(_wastepile.GiveUpCards());
+            RefreshVisual(false);
         }
         else
         {
             var cardCountToTake = 3;
-            if (_cards.Count == 2)
+            if (Cards.Count == 2)
             {
                 cardCountToTake = 2;
             }
-            if (_cards.Count == 1)
+            if (Cards.Count == 1)
             {
                 cardCountToTake = 1;
             }
@@ -49,8 +62,8 @@ public class Deck : Stack
             var cardsToWastepile = new List<Card>();
             for (int i = cardCountToTake - 1; i >= 0; i--)
             {
-                cardsToWastepile.Add(_cards[0]);
-                _cards.RemoveAt(0);
+                cardsToWastepile.Add(Cards[0]);
+                Cards.RemoveAt(0);
             }
             
             _wastepile.Put(cardsToWastepile);
