@@ -53,6 +53,8 @@ public class Table : Stack
         }
 
         RefreshVisual(false);
+
+        takenCards.Reverse();
         return takenCards;
     }
 

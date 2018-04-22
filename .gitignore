@@ -2,3 +2,6 @@ UnityPackageManager
 Library
 Temp
 *.suo
+Build
+Browse.VC.db
+Browse.VC.opendb
