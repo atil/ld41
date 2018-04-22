@@ -40,7 +40,7 @@ public class Deck : Stack
         }
     }
 
-    public override Card TakeCard()
+    public override List<Card> TakeCard(Card clickedCard)
     {
         if (Cards.Count == 0)
         {
@@ -68,7 +68,7 @@ public class Deck : Stack
             
             _wastepile.Put(cardsToWastepile);
         }
-        return null;
+        return new List<Card>();
 
     }
 }

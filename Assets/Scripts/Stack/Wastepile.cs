@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,7 +38,7 @@ public class Wastepile : Stack
                 Cards[i].SetHidden(false);
                 Cards[i].SetPosition(Root.transform.position
                                       + Vector3.right * 0.3f * i 
-                                      + Vector3.up * -0.01f * i
+                                      + Vector3.up * -0.02f * i
                                       + Vector3.forward * 0.3f * i);
                 Cards[i].gameObject.SetActive(true);
 
@@ -50,21 +51,20 @@ public class Wastepile : Stack
         }
     }
 
-    public override Card TakeCard()
+    public override List<Card> TakeCard(Card clickedCard)
     {
         if (Cards.Count > 0)
         {
             var topCard = Cards[0];
             Cards.RemoveAt(0);
-            return topCard;
+            return new List<Card> {topCard};
         }
-        return null;
+        return new List<Card>();
     }
 
-    public override bool UndoCardTake(Card card)
+    public override bool UndoCardTake(List<Card> cards)
     {
-        Put(new List<Card>() {card});
-
+        Put(cards);
         return true;
     }
 }

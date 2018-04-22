@@ -34,8 +34,14 @@ public class Foundation : Stack
         }
     }
 
-    public override bool PutCard(Card card)
+    public override bool PutCard(List<Card> cards)
     {
+        if (cards.Count > 1)
+        {
+            return false;
+        }
+
+        var card = cards[0];
         if (Cards.Count == 0)
         {
             if (card.Number == 1)
@@ -61,11 +67,11 @@ public class Foundation : Stack
         return false;
     }
 
-    public override Card TakeCard()
+    public override List<Card> TakeCard(Card clickedCard)
     {
         if (Cards.Count == 0)
         {
-            return null;
+            return new List<Card>();
         }
         else
         {
@@ -73,15 +79,20 @@ public class Foundation : Stack
             Cards.Remove(topCard);
             RefreshVisual(false);
 
-            return topCard;
+            return new List<Card>() {topCard};
+
         }
 
     }
 
-    public override bool UndoCardTake(Card card)
+    public override bool UndoCardTake(List<Card> cards)
     {
-        Cards.Insert(0, card);
+        foreach (var card in cards)
+        {
+            Cards.Insert(0, card);
+        }
+
         RefreshVisual(false);
-        return base.UndoCardTake(card);
+        return base.UndoCardTake(cards);
     }
 }

@@ -29,11 +29,11 @@ public class Table : Stack
         }
     }
 
-    public override Card TakeCard()
+    public override List<Card> TakeCard(Card clickedCard)
     {
         if (Cards.Count == 0)
         {
-            return null;
+            return new List<Card>();
         }
 
         var topCard = Cards[0];
@@ -41,21 +41,32 @@ public class Table : Stack
         {
             topCard.SetHidden(false);
             RefreshVisual(false);
-            return null;
+            return new List<Card>();
         }
 
-        Cards.Remove(topCard);
+        var takenCards = new List<Card>();
+        var index = Cards.IndexOf(clickedCard);
+        for (int i = index; i >= 0; i--)
+        {
+            takenCards.Add(Cards[0]);
+            Cards.RemoveAt(0);
+        }
+
         RefreshVisual(false);
-        return topCard;
+        return takenCards;
     }
 
-    public override bool PutCard(Card card)
+    public override bool PutCard(List<Card> cards)
     {
         if (Cards.Count == 0)
         {
-            if (card.Number == 13)
+            if (cards[0].Number == 13)
             {
-                Add(card);
+                foreach (var card in cards)
+                {
+                    Add(card);
+                }
+
                 RefreshVisual(false);
                 return true;
             }
@@ -63,10 +74,15 @@ public class Table : Stack
         else
         {
             var topCard = Cards[0];
-            if (!topCard.IsColorSameWith(card)
-                && topCard.Number == card.Number + 1)
+            var topHandCard = cards[0];
+            if (!topCard.IsColorSameWith(topHandCard)
+                && topCard.Number == topHandCard.Number + 1)
             {
-                Add(card);
+                foreach (var card in cards)
+                {
+                    Add(card);
+                }
+
                 RefreshVisual(false);
                 return true;
             }
@@ -75,10 +91,14 @@ public class Table : Stack
         return false;
     }
 
-    public override bool UndoCardTake(Card card)
+    public override bool UndoCardTake(List<Card> cards)
     {
-        Add(card);
-        RefreshVisual(true);
+        cards.Reverse();
+        foreach (var card in cards)
+        {
+            Add(card);
+        }
+        RefreshVisual(false);
         return true;
     }
 }

@@ -19,7 +19,7 @@ public class Game : MonoBehaviour
     private readonly List<Stack> _allStacks = new List<Stack>();
 
     private Stack _takenStack;
-    private Card _takenCard;
+    private readonly List<Card> _takenCards = new List<Card>();
 
     private GameObject _cardPrefab;
 
@@ -43,7 +43,7 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
-        _interaction.OnCardViewClicked += OnCardViewClicked;
+        _interaction.OnCardViewClicked += OnCardClicked;
         _interaction.OnCardUndo += OnCardUndo;
 
         _cardPrefab = CardPrefab;
@@ -101,38 +101,52 @@ public class Game : MonoBehaviour
         }
     }
 
-    private void OnCardViewClicked(Card card)
+    private void OnCardClicked(Card card)
     {
         var ownerStack = _allStacks.Find(x => x.OwnsCard(card));
         if (ownerStack != null)
         {
-            if (_takenCard != null)
+            if (_takenCards.Count > 0)
             {
-                var tempRoot = _takenCard.transform.parent;
-                _takenCard.transform.SetParent(null);
+                foreach (var c in _takenCards)
+                {
+                    c.transform.SetParent(null);
+                }
 
-                var succ = ownerStack.PutCard(_takenCard);
+                var succ = ownerStack.PutCard(_takenCards);
                 if (succ)
                 {
-                    _takenCard.transform.localScale = Vector3.one;
-                    _takenCard = null;
+                    foreach (var c in _takenCards)
+                    {
+                        c.transform.localScale = Vector3.one;
+                    }
+
+                    _takenCards.Clear();
                     _takenStack = null;
                 }
                 else
                 {
-                  _takenCard.transform.SetParent(tempRoot);  
+                    foreach (var c in _takenCards)
+                    {
+                        c.transform.SetParent(_interaction.CardRoot);  
+                    }
                 }
             }
             else
             {
-                _takenCard = ownerStack.TakeCard();
-                if (_takenCard != null)
+                _takenCards.Clear();
+                _takenCards.AddRange(ownerStack.TakeCard(card));
+
+                SetTakenCardVisuals(_takenCards);
+                if (_takenCards.Count > 0)
                 {
-                    _takenCard.transform.SetParent(_interaction.CardRoot);
-                    _takenCard.transform.localPosition = Vector3.zero;
-                    _takenCard.transform.localRotation = Quaternion.identity;
-                    _takenCard.transform.localScale = Vector3.one;
                     _takenStack = ownerStack;
+                    foreach (var takenCard in _takenCards)
+                    {
+                        takenCard.transform.SetParent(_interaction.CardRoot);
+                        takenCard.transform.localRotation = Quaternion.identity;
+                        takenCard.transform.localScale = Vector3.one;
+                    }
                 }
             }
         }
@@ -140,18 +154,31 @@ public class Game : MonoBehaviour
 
     private void OnCardUndo()
     {
-        if (_takenCard == null)
+        if (_takenCards.Count == 0)
         {
             return;
         }
-        _takenCard.transform.SetParent(null);
-        _takenCard.transform.localScale = Vector3.one;
 
-        _takenStack.UndoCardTake(_takenCard);
+        foreach (var takenCard in _takenCards)
+        {
+            takenCard.transform.SetParent(null);
+            takenCard.transform.localScale = Vector3.one;
+        }
+        _takenStack.UndoCardTake(_takenCards);
 
-        _takenCard = null;
+        _takenCards.Clear();
         _takenStack = null;
     }
 
-
+    private void SetTakenCardVisuals(List<Card> cards)
+    {
+        for (var i = 0; i < cards.Count; i++)
+        {
+            var card = cards[i];
+            card.transform.SetParent(_interaction.CardRoot);
+            card.transform.localPosition = Vector3.down * i * 0.3f;
+            card.transform.localRotation = Quaternion.identity;
+            card.transform.localScale = Vector3.one;
+        }
+    }
 }

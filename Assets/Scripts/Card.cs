@@ -31,7 +31,7 @@ public class Card : MonoBehaviour
         Type = type;
         Number = number;
 
-        _numberText.text = number.ToString();
+        _numberText.text = GetNumberText(number);
         _shapeRenderer.sharedMaterial = GetSharedMaterial(type);
 
         if (Type == CardType.Diamond || Type == CardType.Heart)
@@ -89,5 +89,17 @@ public class Card : MonoBehaviour
                 throw new ArgumentOutOfRangeException("type", type, null);
         }
         return mat;
+    }
+
+    private string GetNumberText(int number)
+    {
+        switch (number)
+        {
+            case 1: return "A";
+            case 11: return "J";
+            case 12: return "Q";
+            case 13: return "K";
+            default: return number.ToString();
+        }
     }
 }

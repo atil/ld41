@@ -21,17 +21,17 @@ public class Stack
 
     public virtual void RefreshVisual(bool initial) { }
 
-    public virtual Card TakeCard()
+    public virtual List<Card> TakeCard(Card clickedCard)
     {
-        return null;
+        return new List<Card>();
     }
 
-    public virtual bool PutCard(Card card)
+    public virtual bool PutCard(List<Card> cards)
     {
         return false;
     }
 
-    public virtual bool UndoCardTake(Card card)
+    public virtual bool UndoCardTake(List<Card> cards)
     {
         return false;
     }
