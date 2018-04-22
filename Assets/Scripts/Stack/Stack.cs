@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Stack
 {
-    protected readonly List<CardModel> _cards = new List<CardModel>();
+    protected readonly List<Card> _cards = new List<Card>();
     protected readonly Transform _root;
 
     public Stack(Transform root)
@@ -14,14 +14,14 @@ public class Stack
         _root = root;
     }
 
-    public bool OwnsCard(CardModel cardModel)
+    public bool OwnsCard(Card Card)
     {
-        return _cards.Contains(cardModel);
+        return _cards.Contains(Card);
     }
 
     public virtual void RefreshVisual() { }
 
-    public virtual CardModel TakeCard()
+    public virtual Card TakeCard()
     {
         return null;
     }

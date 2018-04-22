@@ -6,10 +6,9 @@ using UnityEngine;
 
 public class Interaction : MonoBehaviour
 {
-    public Action<CardView> OnCardViewClicked;
+    public Action<Card> OnCardViewClicked;
 
-    [SerializeField]
-    private CardView _cardView;
+    public Transform CardRoot;
 
     private void Update()
     {
@@ -17,7 +16,7 @@ public class Interaction : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            var cardView = hit.transform.GetComponent<CardView>();
+            var cardView = hit.transform.GetComponent<Card>();
             if (cardView != null)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -28,16 +27,4 @@ public class Interaction : MonoBehaviour
         }
     }
 
-    public void SetCard(CardModel cardModel)
-    {
-        if (cardModel != null)
-        {
-            _cardView.gameObject.SetActive(true);
-            _cardView.SetWith(cardModel);
-        }
-        else
-        {
-            _cardView.gameObject.SetActive(false);
-        }
-    }
 }

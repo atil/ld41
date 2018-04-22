@@ -302,8 +302,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\CardModel.cs" />
-    <Compile Include="Assets\Scripts\CardView.cs" />
+    <Compile Include="Assets\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\Controller\Drawing.cs" />
     <Compile Include="Assets\Scripts\Controller\FpsController.cs" />
     <Compile Include="Assets\Scripts\Game.cs" />

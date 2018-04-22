@@ -13,9 +13,9 @@ public class Deck : Stack
         _wastepile = wastepile;
     }
 
-    public void Add(CardModel cardModel)
+    public void Add(Card Card)
     {
-        _cards.Add(cardModel);
+        _cards.Add(Card);
     }
 
     public override void RefreshVisual()
@@ -23,12 +23,12 @@ public class Deck : Stack
         for (var i = 0; i < _cards.Count; i++)
         {
             var cardData = _cards[i];
-            _cards[i].IsHidden = true;
+            _cards[i].SetHidden(true);
             cardData.SetPosition(_root.position + Vector3.up * i * 0.025f);
         }
     }
 
-    public override CardModel TakeCard()
+    public override Card TakeCard()
     {
         if (_cards.Count == 0)
         {
@@ -46,11 +46,10 @@ public class Deck : Stack
                 cardCountToTake = 1;
             }
 
-            var cardsToWastepile = new List<CardModel>();
+            var cardsToWastepile = new List<Card>();
             for (int i = cardCountToTake - 1; i >= 0; i--)
             {
                 cardsToWastepile.Add(_cards[0]);
-                _cards[0].RemoveVisual();
                 _cards.RemoveAt(0);
             }
             

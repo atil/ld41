@@ -11,12 +11,12 @@ public class Game : MonoBehaviour
         get { return Resources.Load<GameObject>("Prefabs/Card"); }
     }
 
-    private readonly List<CardModel> _allCardData = new List<CardModel>();
+    private readonly List<Card> _allCardData = new List<Card>();
     private Table[] _tableStacks;
     private Deck _deckStack;
     private Wastepile _wastepileStack;
     private readonly List<Stack> _allStacks = new List<Stack>();
-    private CardModel _takenCard;
+    private Card _takenCard;
 
     private GameObject _cardPrefab;
 
@@ -24,7 +24,7 @@ public class Game : MonoBehaviour
     private Interaction _interaction;
 
     #region Roots
-    [Header("CardModel Stack Roots")]
+    [Header("Card Stack Roots")]
     [SerializeField]
     private Transform _deckRoot;
 
@@ -65,7 +65,6 @@ public class Game : MonoBehaviour
             _tableStacks[i] = new Table(_tableRoots[i]);
             for (int j = 0; j < i; j++)
             {
-                CreateCard(_allCardData[globalCardCounter], _tableRoots[i]);
                 _tableStacks[i].Add(_allCardData[globalCardCounter]);
 
                 globalCardCounter++;
@@ -79,7 +78,6 @@ public class Game : MonoBehaviour
 
         for (int i = globalCardCounter; i < _allCardData.Count; i++)
         {
-            CreateCard(_allCardData[i], _deckRoot);
             _deckStack.Add(_allCardData[i]);
         }
 
@@ -94,34 +92,27 @@ public class Game : MonoBehaviour
     {
         for (int i = 1; i < 14; i++)
         {
-            _allCardData.Add(new CardModel()
-            {
-                Type = type,
-                Number = i
-            });
+            var card = GameObject.Instantiate(_cardPrefab).GetComponent<Card>();
+            card.SetData(type, i);
+            _allCardData.Add(card);
         }
     }
 
-    private CardView CreateCard(CardModel cardModel, Transform root)
-    {
-        var cardView = Instantiate(_cardPrefab, root).GetComponent<CardView>();
-        cardView.SetWith(cardModel);
-
-        return cardView;
-    }
-
-    private void OnCardViewClicked(CardView cardView)
+    private void OnCardViewClicked(Card card)
     {
         if (_takenCard != null)
         {
             return;
         }
 
-        var ownerStack = _allStacks.Find(x => x.OwnsCard(cardView.Model));
+        var ownerStack = _allStacks.Find(x => x.OwnsCard(card));
         if (ownerStack != null)
         {
             _takenCard = ownerStack.TakeCard();
-            _interaction.SetCard(_takenCard);
+            _takenCard.transform.SetParent(_interaction.CardRoot);
+            _takenCard.transform.localPosition = Vector3.zero;
+            _takenCard.transform.localRotation = Quaternion.identity;
+            _takenCard.transform.localScale = Vector3.one;
         }
     }
 

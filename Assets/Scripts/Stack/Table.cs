@@ -8,21 +8,21 @@ public class Table : Stack
 {
     public Table(Transform root) : base(root) { }
 
-    public void Add(CardModel cardModel)
+    public void Add(Card card)
     {
-        _cards.Add(cardModel);
+        _cards.Add(card);
     }
 
     public override void RefreshVisual()
     {
         for (var i = 0; i < _cards.Count; i++)
         {
-            _cards[i].IsHidden = i > 0;
+            _cards[i].SetHidden(i > 0);
             _cards[i].SetPosition(_root.position + (_cards.Count - i) * Vector3.back);
         }
     }
 
-    public override CardModel TakeCard()
+    public override Card TakeCard()
     {
         if (_cards.Count == 0)
         {
@@ -37,7 +37,6 @@ public class Table : Stack
             return null;
         }
 
-        topCard.RemoveVisual();
         _cards.Remove(topCard);
         RefreshVisual();
         return topCard;
