@@ -24,21 +24,19 @@ public class Card : MonoBehaviour
     private TextMeshPro _numberText;
 
     [SerializeField]
-    private TextMeshPro _shapeText;
-
+    private Renderer _shapeRenderer;
 
     public void SetData(CardType type, int number)
     {
         Type = type;
         Number = number;
 
-        _shapeText.text = type.ToString();
         _numberText.text = number.ToString();
+        _shapeRenderer.sharedMaterial = GetSharedMaterial(type);
 
         if (Type == CardType.Diamond || Type == CardType.Heart)
         {
             _numberText.color = Color.red;
-            _shapeText.color = Color.red;
         }
     }
 
@@ -66,5 +64,30 @@ public class Card : MonoBehaviour
         var isArgRed = c.Type == CardType.Diamond || c.Type == CardType.Heart;
 
         return !(isThisRed ^ isArgRed);
+    }
+
+    private Material GetSharedMaterial(CardType type)
+    {
+        Material mat = null;
+        switch (type)
+        {
+            case CardType.None:
+                break;
+            case CardType.Diamond:
+                mat = Resources.Load<Material>("Materials/DiamondMaterial");
+                break;
+            case CardType.Heart:
+                mat = Resources.Load<Material>("Materials/HeartMaterial");
+                break;
+            case CardType.Spade:
+                mat = Resources.Load<Material>("Materials/SpadeMaterial");
+                break;
+            case CardType.Club:
+                mat = Resources.Load<Material>("Materials/ClubMaterial");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("type", type, null);
+        }
+        return mat;
     }
 }

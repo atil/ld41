@@ -211,10 +211,11 @@ MonoBehaviour:
   _interaction: {fileID: 744674078}
   _deckRoot: {fileID: 1726480440}
   _wastepileRoot: {fileID: 1219560947}
-  _foundationRoot1: {fileID: 1935207723}
-  _foundationRoot2: {fileID: 1397876862}
-  _foundationRoot3: {fileID: 2141862825}
-  _foundationRoot4: {fileID: 733092888}
+  _foundationRoots:
+  - {fileID: 1935207723}
+  - {fileID: 1397876862}
+  - {fileID: 2141862825}
+  - {fileID: 733092888}
   _tableRoots:
   - {fileID: 1801022988}
   - {fileID: 2060112812}

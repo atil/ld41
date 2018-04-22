@@ -15,6 +15,7 @@ public class Game : MonoBehaviour
     private Table[] _tableStacks;
     private Deck _deckStack;
     private Wastepile _wastepileStack;
+    private Foundation[] _foundationStacks;
     private readonly List<Stack> _allStacks = new List<Stack>();
 
     private Stack _takenStack;
@@ -34,16 +35,7 @@ public class Game : MonoBehaviour
     private Transform _wastepileRoot;
 
     [SerializeField]
-    private Transform _foundationRoot1;
-
-    [SerializeField]
-    private Transform _foundationRoot2;
-
-    [SerializeField]
-    private Transform _foundationRoot3;
-
-    [SerializeField]
-    private Transform _foundationRoot4;
+    private Transform[] _foundationRoots;
 
     [SerializeField]
     private Transform[] _tableRoots;
@@ -87,7 +79,14 @@ public class Game : MonoBehaviour
 
         _deckStack.RefreshVisual(true);
 
+        _foundationStacks = new Foundation[4];
+        for (int i = 0; i < 4; i++)
+        {
+            _foundationStacks[i] = new Foundation(_foundationRoots[i]);
+        }
+
         _allStacks.AddRange(_tableStacks);
+        _allStacks.AddRange(_foundationStacks);
         _allStacks.Add(_deckStack);
         _allStacks.Add(_wastepileStack);
     }
