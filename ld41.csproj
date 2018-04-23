@@ -309,11 +309,13 @@
     <Compile Include="Assets\Scripts\Controller\MouseLook.cs" />
     <Compile Include="Assets\Scripts\Game.cs" />
     <Compile Include="Assets\Scripts\Interaction.cs" />
+    <Compile Include="Assets\Scripts\Music.cs" />
     <Compile Include="Assets\Scripts\Stack\Deck.cs" />
     <Compile Include="Assets\Scripts\Stack\Foundation.cs" />
     <Compile Include="Assets\Scripts\Stack\Stack.cs" />
     <Compile Include="Assets\Scripts\Stack\Table.cs" />
     <Compile Include="Assets\Scripts\Stack\Wastepile.cs" />
+    <Compile Include="Assets\Scripts\Ui.cs" />
     <Compile Include="Assets\Scripts\Util.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
