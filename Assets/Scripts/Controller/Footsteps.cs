@@ -31,6 +31,11 @@ public class Footsteps : MonoBehaviour
 
     public void ExternalUpdate(FpsController fpsController)
     {
+        if (Time.realtimeSinceStartup < 2f)
+        {
+            return;
+        }
+
         if (_distanceCovered > DistancePerStep)
         {
             _distanceCovered = 0;

@@ -13,6 +13,8 @@ public class MouseLook
     private float _pitch;
     private float _yaw;
 
+    private int _isInverted = 1;
+
     public MouseLook(Transform camTransform)
     {
         _cam = camTransform;
@@ -21,7 +23,12 @@ public class MouseLook
 
     public Vector3 Update()
     {
-        _pitch -= Sensitivity * Input.GetAxis("Mouse Y");
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            _isInverted = _isInverted == 1 ? -1 : 1;
+        }
+
+        _pitch -= Sensitivity * Input.GetAxis("Mouse Y") * _isInverted;
         _yaw += Sensitivity * Input.GetAxis("Mouse X");
 
         _pitch = Mathf.Clamp(_pitch, _pitchLimits.x, _pitchLimits.y);

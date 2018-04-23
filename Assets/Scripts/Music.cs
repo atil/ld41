@@ -20,4 +20,12 @@ public class Music : MonoBehaviour
             yield return null;
         }
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            AudioSource.enabled = !AudioSource.enabled;
+        }
+    }
 }
