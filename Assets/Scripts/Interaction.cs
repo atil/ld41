@@ -11,6 +11,10 @@ public class Interaction : MonoBehaviour
 
     public Transform CardRoot;
 
+    public AudioSource AudioSource;
+    public AudioClip TakeClip;
+    public AudioClip DropClip;
+
     private void Update()
     {
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
@@ -34,4 +38,13 @@ public class Interaction : MonoBehaviour
 
     }
 
+    public void PlayTakeSound()
+    {
+        AudioSource.PlayOneShot(TakeClip);
+    }
+
+    public void PlayDropSound()
+    {
+        AudioSource.PlayOneShot(DropClip);
+    }
 }

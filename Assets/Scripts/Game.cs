@@ -118,6 +118,7 @@ public class Game : MonoBehaviour
                 var succ = ownerStack.PutCard(_takenCards);
                 if (succ)
                 {
+                    _interaction.PlayDropSound();
                     foreach (var c in _takenCards)
                     {
                         c.transform.localScale = Vector3.one;
@@ -142,6 +143,7 @@ public class Game : MonoBehaviour
                 SetTakenCardVisuals(_takenCards);
                 if (_takenCards.Count > 0)
                 {
+                    _interaction.PlayTakeSound();
                     _takenStack = ownerStack;
                     foreach (var takenCard in _takenCards)
                     {
@@ -161,6 +163,7 @@ public class Game : MonoBehaviour
             return;
         }
 
+        _interaction.PlayDropSound();
         foreach (var takenCard in _takenCards)
         {
             takenCard.transform.SetParent(null);

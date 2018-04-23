@@ -602,6 +602,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardRoot: {fileID: 1209702196}
+  AudioSource: {fileID: 744674079}
+  TakeClip: {fileID: 8300000, guid: 42f2ead314577014e98d2826cac539f6, type: 3}
+  DropClip: {fileID: 8300000, guid: 19b0bb1bd3b986f4eab8a7c8999e0949, type: 3}
 --- !u!82 &744674079
 AudioSource:
   m_ObjectHideFlags: 0
