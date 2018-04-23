@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = false;
         _interaction.OnCardViewClicked += OnCardClicked;
         _interaction.OnCardUndo += OnCardUndo;
 
@@ -179,6 +181,14 @@ public class Game : MonoBehaviour
             card.transform.localPosition = Vector3.down * i * 0.3f;
             card.transform.localRotation = Quaternion.identity;
             card.transform.localScale = Vector3.one;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene("Game");
         }
     }
 }

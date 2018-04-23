@@ -12,6 +12,10 @@ public class FpsController : MonoBehaviour
         get { return _velocity.magnitude; }
     }
 
+    public bool IsGrounded { get; private set; }
+    public bool IsLandedThisFrame { get; private set; }
+    public bool IsGonnaJump { get { return _isGonnaJump; } }
+
     // It's better for camera to be a seperate object, not under the controller
     // Since we update the position in FixedUpdate(), it would cause a jittery vision
     [SerializeField]
@@ -87,11 +91,14 @@ public class FpsController : MonoBehaviour
     private bool _isGonnaJump; // ...between FixedUpdate() and Update()
     private Vector3 _wishDirDebug; // ...between FixedUpdate() and OnGUI()
 
+    private Footsteps _footsteps;
+
     private void Start()
     {
         Application.targetFrameRate = 60; // My laptop is shitty and burn itself to death if not for this
         _transform = transform;
         _mouseLook = new MouseLook(_camTransform);
+        _footsteps = FindObjectOfType<Footsteps>();
     }
 
     // Only for debug drawing
@@ -133,9 +140,12 @@ public class FpsController : MonoBehaviour
         _wishDirDebug = wishDir.WithY(0);
 
         Vector3 collisionDisplacement;
-        var isGrounded = ResolveCollisions(ref _velocity, out collisionDisplacement);
+        IsGrounded = ResolveCollisions(ref _velocity, out collisionDisplacement);
 
-        if (isGrounded) // Ground move
+        IsLandedThisFrame = IsGrounded && !_isGroundedInPrevFrame;
+        _footsteps.ExternalUpdate(this);
+
+        if (IsGrounded) // Ground move
         {
             // Don't apply friction if just landed or about to jump
             // TODO: Actually this can be extended to multiple frames, to make it easier
@@ -180,7 +190,8 @@ public class FpsController : MonoBehaviour
 
         _transform.position += displacement;
         _transform.position += collisionDisplacement; // Pushing out of environment
-        _isGroundedInPrevFrame = isGrounded;
+        _isGroundedInPrevFrame = IsGrounded;
+
     }
 
     // Input receiving happens here
